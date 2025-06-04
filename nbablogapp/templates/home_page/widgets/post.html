@@ -1,0 +1,41 @@
+<style>
+    .post-content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        height: 20vh;
+        background-color: #f5f5f5;
+        width: 40%;
+        border-radius: 10px;
+    }
+    .post-container {
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+        align-items: center;
+        padding-top: 15px;
+    }
+    .post-row {
+        display: flex;
+        width: 90%;
+        gap: 10px;
+    }
+</style>
+<div class="post-container">
+    <div class="post-content py-4">
+        <div class="post-row">
+            <div class="col-2">
+                <img src="{{ post.author.profile_picture.url }}" alt="PFP" style="width: auto; height: auto; border-radius: 50%;">
+            </div>
+            <div class="col-10">
+                <p><b>{{ post.author.get_full_name }}</b> @{{ post.author.username }} {{ post.get_time_since_posted }}</p>
+            </div>
+        </div>
+        <div class="post-row">
+            <div class="col-2"></div>
+            <div class="col-10">
+                <p>{{ post.content }}</p>
+            </div>
+        </div>
+    </div>
+</div>

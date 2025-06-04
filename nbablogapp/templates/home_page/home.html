@@ -1,0 +1,51 @@
+{% extends 'header.html' %}
+
+{% block content %}
+<div class="page-container">
+    <div class="content-wrap">
+        <div class="home-page">
+            {% for post in posts %}
+                {% include 'home_page/widgets/post.html' with post=post %}
+            {% endfor %}
+        </div>
+    </div>
+    <footer class="create-section">
+        <form id="create_post_form" method="POST">
+            {% csrf_token %}
+            <div class="create-post">
+                <textarea name="post_content" id="post_content" placeholder="What's on your mind?"></textarea>
+            </div>
+            <button class="create-button btn success" id="create_post_btn" type="button">Create Post</button>
+            <div id="send_section" style="display:none;">
+                <button class="send-button btn cancel" id="cancel_post_btn" type="button">Cancel</button>
+                <button class="send-button btn success" id="send_post_btn" type="button">Send</button>
+            </div>
+        </form>
+    </footer>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $('#create_post_btn').click(function() {
+            $('.create-post').fadeToggle(300);
+            $('#post_content').focus();
+            $('#create_post_btn').hide();
+            $('#send_section').fadeToggle(300);
+        });
+        $('#cancel_post_btn').click(function() {
+            $('.create-post').hide();
+            $('#create_post_btn').fadeToggle(300);
+            $('#send_section').hide();
+        });
+        $('#send_post_btn').click(function() {
+            console.log('in here')
+            let content = $('#post_content').val();
+            if(content == '') {
+                alert('Please enter a post content');
+                return;
+            }
+            $('#create_post_form').submit();
+        });
+    });
+</script>
+{% endblock content %}
