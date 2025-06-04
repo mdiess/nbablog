@@ -20,15 +20,29 @@
         width: 90%;
         gap: 10px;
     }
+    .interact-btn {
+        background-color: transparent;
+        border: none;
+        cursor: pointer;
+        color: #333;
+        font-size: 1.2em;
+    }
+    .interact-section {
+        display: flex;
+        align-items: center;
+        margin-top: 30px;
+    }
 </style>
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/fontawesome/css/all.min.css' %}">
 <div class="post-container">
     <div class="post-content py-4">
         <div class="post-row">
             <div class="col-2">
-                <img src="{{ post.author.profile_picture.url }}" alt="PFP" style="width: auto; height: auto; border-radius: 50%;">
+                <img src="{{ post.author.profile_picture }}" alt="PFP" style="width: auto; height: auto; border-radius: 50%;">
             </div>
             <div class="col-10">
-                <p><b>{{ post.author.get_full_name }}</b> @{{ post.author.username }} {{ post.get_time_since_posted }}</p>
+                <p><b>{{ post.author.get_full_name }}</b> @{{ post.author.username }} - {{ post.get_time_since_posted }}</p>
             </div>
         </div>
         <div class="post-row">
@@ -37,5 +51,34 @@
                 <p>{{ post.content }}</p>
             </div>
         </div>
+        <div class="post-row">
+            <div class="col-2"></div>
+            <div class="col-10">
+                {% if post.image %}
+                    <img src="{{ post.image.url }}" alt="Post Image" style="width: 100%; height: auto; border-radius: 10px;">
+                {% endif %}
+            </div>
+        </div>
+        <div class="post-row interact-section">
+            <div class="col-2"></div>
+            <div class="col-2">
+                <button id="post_{{ post.pk }}_comments" class="interact-btn" data-id="{{ post.pk }}" data-action="reply"><i class="fa-regular fa-comment"></i></button> {{ post.get_reply_count }}
+            </div>
+            <div class="col-2">
+                <button id="post_{{ post.pk }}_reposts" class="interact-btn" data-id="{{ post.pk }}" data-action="repost"><i class="fa-solid fa-repeat"></i></button> {{ post.get_repost_count }}
+            </div>
+            <div class="col-2">
+                <button id="post_{{ post.pk }}_likes" class="interact-btn" data-id="{{ post.pk }}" data-action="like"><i class="fa-regular fa-heart"></i></button> {{ post.get_like_count }}
+            </div>
+        </div>
     </div>
 </div>
+<script>
+    $(document).ready(function() {
+        $('.interact-btn').click(function() {
+            // Handle interaction functionality
+            const postId = $(this).data('id');
+            const action = $(this).data('action');
+        });
+    });
+</script>

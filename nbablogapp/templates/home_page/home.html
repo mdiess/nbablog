@@ -38,10 +38,9 @@
             $('#send_section').hide();
         });
         $('#send_post_btn').click(function() {
-            console.log('in here')
             let content = $('#post_content').val();
             if(content == '') {
-                alert('Please enter a post content');
+                alert('Please enter content for the post');
                 return;
             }
             $('#create_post_form').submit();

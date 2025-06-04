@@ -1,8 +1,5 @@
 from nbablogapp.models import *
 from django.shortcuts import render, redirect
-from django.template.loader import render_to_string
-from django.contrib.sessions.backends.db import SessionStore
-from django.contrib.sessions.models import Session
 from django.contrib.sites.models import *
 from django.db.models import Q
 from django.contrib.auth import authenticate, login as auth_login
@@ -12,7 +9,6 @@ from django.contrib.auth import logout
 @login_required(login_url='home_page:login')
 def home(request):
     if request.method == 'POST':
-        print(request.POST)
         post_content = request.POST.get('post_content')
         post = Post.objects.create(
             content=post_content,
