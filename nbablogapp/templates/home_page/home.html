@@ -4,10 +4,11 @@
 <div class="page-container">
     <div class="content-wrap">
         <div class="home-page">
-            {% for post in posts %}
+            {% for post in page_obj %}
                 {% include 'home_page/widgets/post.html' with post=post %}
             {% endfor %}
         </div>
+        <div id="loading" style="display:none;">Loading more posts...</div>
     </div>
     <footer class="create-section">
         <form id="create_post_form" method="POST">
@@ -26,6 +27,22 @@
 
 <script>
     $(document).ready(function() {
+        let page = 2;
+        let hasNext = true;
+        let isLoading = false;
+        $(window).scroll(function() {
+            if (hasNext && !isLoading && $(window).scrollTop() + $(window).height() >= $(document).height() - 200) {
+                isLoading = true;
+                $('#loading').show();
+                $.get("", { page: page }, function(data) {
+                    $('.home-page').append(data.html);
+                    hasNext = data.has_next;
+                    page++;
+                    isLoading = false;
+                    $('#loading').hide();
+                });
+            }
+        });
         $('#create_post_btn').click(function() {
             $('.create-post').fadeToggle(300);
             $('#post_content').focus();

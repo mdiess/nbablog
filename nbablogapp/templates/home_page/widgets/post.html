@@ -32,6 +32,12 @@
         align-items: center;
         margin-top: 30px;
     }
+    .liked-post {
+        color: red;
+    }
+    .reposted-post {
+        color: green;
+    }
 </style>
 {% load static %}
 <link rel="stylesheet" href="{% static 'css/fontawesome/css/all.min.css' %}">
@@ -62,13 +68,22 @@
         <div class="post-row interact-section">
             <div class="col-2"></div>
             <div class="col-2">
-                <button id="post_{{ post.pk }}_comments" class="interact-btn" data-id="{{ post.pk }}" data-action="reply"><i class="fa-regular fa-comment"></i></button> {{ post.get_reply_count }}
+                <button id="post_{{ post.pk }}_reply" class="interact-btn" data-id="{{ post.pk }}" data-action="reply">
+                    <i class="fa-regular fa-comment"></i>
+                </button>
+                <span id="post_{{ post.pk }}_reply_count">{{ post.get_reply_count }}</span>
             </div>
             <div class="col-2">
-                <button id="post_{{ post.pk }}_reposts" class="interact-btn" data-id="{{ post.pk }}" data-action="repost"><i class="fa-solid fa-repeat"></i></button> {{ post.get_repost_count }}
+                <button id="post_{{ post.pk }}_repost" class="interact-btn" data-id="{{ post.pk }}" data-action="repost">
+                    <i class="{% if post.is_reposted %}fa-solid fa-repeat reposted-post{% else %}fa-solid fa-repeat{% endif %}"></i>
+                </button>
+                <span id="post_{{ post.pk }}_repost_count">{{ post.get_repost_count }}</span>
             </div>
             <div class="col-2">
-                <button id="post_{{ post.pk }}_likes" class="interact-btn" data-id="{{ post.pk }}" data-action="like"><i class="fa-regular fa-heart"></i></button> {{ post.get_like_count }}
+                <button id="post_{{ post.pk }}_like" class="interact-btn" data-id="{{ post.pk }}" data-action="like">
+                    <i class="{% if post.is_liked %}fa-solid fa-heart liked-post{% else %}fa-regular fa-heart{% endif %}"></i>
+                </button>
+                <span id="post_{{ post.pk }}_like_count">{{ post.get_like_count }}</span>
             </div>
         </div>
     </div>
@@ -79,6 +94,35 @@
             // Handle interaction functionality
             const postId = $(this).data('id');
             const action = $(this).data('action');
+            $.ajax({
+                url: "{% url 'home_page:interact_post' %}",
+                type: "POST",
+                data: {
+                    post_id: postId,
+                    action: action,
+                    csrfmiddlewaretoken: '{{ csrf_token }}'
+                },
+                success: function(response) {
+                    if (response.success) {
+                        // Update the button state and count
+                        if (action === 'like') {
+                            const icon = $('#post_' + postId + '_like i');
+                            icon.toggleClass('liked-post');
+                            icon.toggleClass('fa-regular fa-solid');
+                        } else if (action === 'repost') {
+                            const icon = $('#post_' + postId + '_repost i');
+                            icon.toggleClass('reposted-post');
+                        }
+                        // Update the count
+                        $('#post_' + postId + '_' + action + '_count').text(response.new_count);
+                    } else {
+                        alert(response.error);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error:", error);
+                }
+            });
         });
     });
 </script>
