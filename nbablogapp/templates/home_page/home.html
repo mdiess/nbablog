@@ -8,7 +8,9 @@
                 {% include 'home_page/widgets/post.html' with post=post %}
             {% endfor %}
         </div>
-        <div id="loading" style="display:none;">Loading more posts...</div>
+        <div style="display:flex;justify-content:center;">
+            <div id="loading" style="display:none;">Loading more posts <i class="fa-solid fa-spinner"></i></div>
+        </div>
     </div>
     <footer class="create-section">
         <form id="create_post_form" method="POST">
